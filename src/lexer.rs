@@ -11,13 +11,13 @@ pub enum TokenType {
 }
 #[derive(Debug)]
 pub struct Token {
-    token: String,
+    pub token: String,
     token_type: TokenType,
-    start_index: u32
+    pub start_index: usize
 }
 
 impl Token {
-    pub fn new(token: String, token_type: TokenType, start_index: u32) -> Token {
+    pub fn new(token: String, token_type: TokenType, start_index: usize) -> Token {
         Token{
             token,
             token_type,
@@ -34,7 +34,7 @@ fn is_alpha(c:char)->bool {
 }
 #[derive(Debug)]
 pub struct Lexer<'a> {
-    index:u32,
+    index:usize,
     chars: Chars<'a>,
     buffer: Vec<char>,
     last_token_type: TokenType,
@@ -94,7 +94,7 @@ impl Iterator for Lexer<'_> {
                         if self.buffer[self.buffer.len()-1] == '.' {
                             self.buffer.push(c);    
                         } else {
-                            let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+                            let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
                             self.buffer.clear();
                             self.last_token_type = TokenType::Number;
                             self.buffer.push(c);
@@ -108,7 +108,7 @@ impl Iterator for Lexer<'_> {
                         if c == '.' && !self.buffer.contains(&'.') {
                             self.buffer.push(c);    
                         } else {
-                            let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+                            let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
                             self.buffer.clear();
                             self.last_token_type = TokenType::Symbol;
                             self.buffer.push(c);
@@ -116,14 +116,14 @@ impl Iterator for Lexer<'_> {
                         }
                     },
                     TokenType::Text => {
-                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
                         self.buffer.clear();
                         self.last_token_type = TokenType::Symbol;
                         self.buffer.push(c);
                         return Some(token)
                     },
                     TokenType::Symbol => {
-                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
                         self.buffer.clear();
                         self.last_token_type = TokenType::Symbol;
                         self.buffer.push(c);
@@ -140,7 +140,7 @@ impl Iterator for Lexer<'_> {
                         self.buffer.push(c);
                     },
                     TokenType::Symbol => {
-                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+                        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
                         self.buffer.clear();
                         self.last_token_type = TokenType::Text;
                         self.buffer.push(c);
@@ -154,7 +154,7 @@ impl Iterator for Lexer<'_> {
         if self.buffer.is_empty() {
             return None;
         }
-        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() as u32 -1);
+        let token = Token::new(self.buffer.iter().collect(), self.last_token_type, self.index-self.buffer.len() -1);
         self.buffer.clear();
         return Some(token)
     }

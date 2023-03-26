@@ -1,5 +1,7 @@
-mod lexer;
+pub mod lexer;
+pub mod exceptions;
 pub mod definations;
+pub mod parser;
 
 
 use lexer::{Lexer, Token};
