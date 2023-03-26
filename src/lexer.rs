@@ -56,7 +56,12 @@ impl Lexer<'_>{
             self.index = self.index + 1;
         }
     }
-    pub fn next_token(&mut self) -> Option<Token> {
+    
+}
+
+impl Iterator for Lexer<'_> {
+    type Item = Token;
+    fn next(&mut self) -> Option<Token> {
         if self.index == 0 { //Called first time
             self.next();
             if self.optional_char.is_none() {
